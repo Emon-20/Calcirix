@@ -1,0 +1,167 @@
+/* --- 3-Color Deep Theme Palette --- */
+:root {
+    --bg-deep: #0b132b;       /* গাঢ় নেভী ব্লু (Main Background) */
+    --panel-deep: #1c2541;    /* গাঢ় স্লেট গ্রে (Cards & Panels) */
+    --accent-deep: #5bc0be;   /* ডিপ টিল / ভাইব্রেন্ট অ্যাকসেন্ট (Highlights & Borders) */
+    --text-main: #ffffff;
+    --text-muted: #8d99ae;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-container {
+    background-color: var(--panel-deep);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 380px;
+    text-align: center;
+    border: 1px solid rgba(91, 192, 190, 0.2);
+}
+
+header h1 {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+header h1 .highlight {
+    color: var(--accent-deep);
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.controls-panel {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: var(--accent-deep);
+    color: var(--bg-deep);
+    transition: opacity 0.2s;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--accent-deep);
+    border: 1px solid var(--accent-deep);
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.board-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* 4x4 CSS Grid */
+.grid-4x4 {
+    display: grid;
+    grid-template-columns: repeat(4, 70px);
+    grid-template-rows: repeat(4, 70px);
+    gap: 4px;
+    background-color: var(--bg-deep);
+    padding: 4px;
+    border-radius: 8px;
+    border: 2px solid var(--accent-deep);
+}
+
+.cell {
+    background-color: var(--panel-deep);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-main);
+    cursor: pointer;
+    border-radius: 4px;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.cell:hover {
+    background-color: rgba(91, 192, 190, 0.1);
+}
+
+.cell.selected {
+    background-color: rgba(91, 192, 190, 0.25);
+    border: 2px solid var(--accent-deep);
+}
+
+.cell.prefilled {
+    color: var(--accent-deep);
+}
+
+/* Cage visual hint / math clue on top-left of cell */
+.cage-clue {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.numpad {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.num-btn {
+    flex: 1;
+    padding: 12px 0;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    border: 1px solid rgba(91, 192, 190, 0.3);
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.num-btn:hover {
+    background-color: var(--accent-deep);
+    color: var(--bg-deep);
+}
+
+.clear-btn {
+    font-size: 0.85rem;
+}
+
+.message-box {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    min-height: 20px;
+}
