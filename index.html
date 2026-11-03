@@ -1,90 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calcirix — Logic Puzzle Engine</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Calcirix — Mathematical Logic Engine</title>
+  <meta name="description" content="Calcirix is a professional logic puzzle combining Sudoku uniqueness rules and KenKen arithmetic cage targets across 4 progressive grid levels (4x4, 5x5, 7x7, 9x9).">
+  <meta name="theme-color" content="#0b132b">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
+<div id="app" class="app">
 
-  <header class="app-header">
-    <div class="brand">
-      <span class="brand-mark">4×4</span>
-      <div>
-        <h1>Calcirix</h1>
-        <p class="subtitle">Sudoku rules. KenKen arithmetic. One grid.</p>
+  <!-- ==================== MENU VIEW ==================== -->
+  <main id="menu-view" class="view menu-view">
+    <header class="menu-header">
+      <div class="brand">
+        <span class="brand-mark">CALCIRIX</span>
+        <button id="btn-sound-toggle" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound">🔊</button>
       </div>
-    </div>
-  </header>
+      <h1 class="menu-title">Logic Puzzle Engine</h1>
+      <p class="subtitle">Sudoku Uniqueness • KenKen Arithmetic • One Unified Grid</p>
+    </header>
 
-  <section class="toolbar">
-    <div class="control-group">
-      <label for="difficulty-select">Difficulty</label>
-      <select id="difficulty-select">
-        <option value="easy">Easy</option>
-        <option value="medium" selected>Medium</option>
-        <option value="hard">Hard</option>
-      </select>
+    <section class="menu-section">
+      <div class="section-label">Select Level & Grid Size</div>
+      <div id="level-cards-container" class="level-grid" role="radiogroup" aria-label="Level and Grid Size selection">
+        <!-- Rendered dynamically via js/ui.js -->
+      </div>
+    </section>
+
+    <section class="menu-section">
+      <div class="section-label">Difficulty</div>
+      <div class="diff-selector" role="radiogroup" aria-label="Difficulty selection">
+        <button class="diff-pill" data-diff="easy">
+          <span class="diff-name">Easy</span>
+          <span class="diff-hint">More starter givens</span>
+        </button>
+        <button class="diff-pill active" data-diff="medium">
+          <span class="diff-name">Medium</span>
+          <span class="diff-hint">Balanced deduction</span>
+        </button>
+        <button class="diff-pill" data-diff="hard">
+          <span class="diff-name">Hard</span>
+          <span class="diff-hint">Sparse anchor hints</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="menu-actions">
+      <button id="btn-start-game" class="action-btn primary large-btn">Play Selected Level →</button>
+      <button id="btn-how-to-play" class="action-btn secondary">📖 How to Play / Rules</button>
     </div>
 
-    <div class="stat-group">
+    <footer class="app-footer">
+      <p>Progressive arithmetic logic puzzle engine. Built with vanilla HTML5, CSS3 & modern JavaScript.</p>
+    </footer>
+  </main>
+
+  <!-- ==================== GAME VIEW ==================== -->
+  <main id="game-view" class="view game-view hidden">
+    
+    <!-- Top Navigation Bar -->
+    <header class="game-nav">
+      <button id="btn-return-menu" class="nav-btn" aria-label="Return to Menu">
+        <span>← Menu</span>
+      </button>
+
+      <div class="badge-cluster">
+        <span id="hud-level-badge" class="pill-badge level-pill">Level 1 • 4×4</span>
+        <span id="hud-diff-badge" class="pill-badge diff-pill-hud">Medium</span>
+      </div>
+
+      <div class="nav-tools">
+        <button id="btn-header-sound" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound">🔊</button>
+        <button id="btn-pause" class="nav-btn pause-btn" aria-label="Pause Game">⏸ Pause</button>
+      </div>
+    </header>
+
+    <!-- Stat Bar HUD -->
+    <section class="hud-bar" aria-label="Game status counters">
       <div class="stat">
         <span class="stat-label">Time</span>
-        <span id="timer-display" class="stat-value">00:00</span>
+        <span id="timer-display" class="stat-value font-mono">00:00</span>
       </div>
       <div class="stat">
         <span class="stat-label">Mistakes</span>
-        <span id="mistake-display" class="stat-value">0 / 3</span>
+        <span id="mistake-display" class="stat-value font-mono">0 / 3</span>
       </div>
       <div class="stat">
         <span class="stat-label">Streak</span>
-        <span id="streak-display" class="stat-value">0</span>
+        <span id="streak-display" class="stat-value font-mono">0</span>
       </div>
+      <div class="stat">
+        <span class="stat-label">Remaining</span>
+        <span id="empty-display" class="stat-value font-mono">--</span>
+      </div>
+    </section>
+
+    <!-- Puzzle Grid Board Wrapper -->
+    <section class="board-wrapper" id="board-wrapper">
+      <div id="grid-board" class="grid-board" role="grid" aria-label="Calcirix puzzle grid">
+        <!-- Rendered dynamically by js/ui.js -->
+      </div>
+    </section>
+
+    <!-- Dynamic Message Box -->
+    <div id="message-box" class="message-box" role="status" aria-live="polite">
+      Select a cell to begin placing numbers.
     </div>
-  </section>
 
-  <section class="board-wrapper">
-    <div id="grid-board" class="grid-board" role="grid" aria-label="Calcirix puzzle grid"></div>
-  </section>
+    <!-- Gameplay Controls -->
+    <section class="controls">
+      <!-- Dynamic Numpad for 4x4, 5x5, 7x7, 9x9 -->
+      <div class="numpad-container">
+        <div id="numpad" class="numpad" role="toolbar" aria-label="Number Input Pad">
+          <!-- Rendered dynamically by js/ui.js -->
+        </div>
+      </div>
 
-  <div id="message-box" class="message-box" role="status">Pick a cell, then enter a value. Cage totals must match too.</div>
+      <!-- Action Buttons Row 1: Tools -->
+      <div class="action-grid tools-grid">
+        <button id="btn-notes" class="action-btn" aria-pressed="false" title="Toggle pencil marks mode (N)">✏️ Notes: Off</button>
+        <button id="btn-undo" class="action-btn" disabled title="Undo last action (Ctrl+Z / U)">↩ Undo</button>
+        <button id="btn-redo" class="action-btn" disabled title="Redo action (Ctrl+Y / R)">↪ Redo</button>
+        <button id="btn-hint" class="action-btn" title="Get a smart deduction hint (H)">💡 Hint</button>
+      </div>
 
-  <section class="controls">
-    <div class="numpad" id="numpad">
-      <button class="num-btn" data-val="1">1</button>
-      <button class="num-btn" data-val="2">2</button>
-      <button class="num-btn" data-val="3">3</button>
-      <button class="num-btn" data-val="4">4</button>
-      <button class="num-btn clear-btn" data-val="0">Clear</button>
-    </div>
+      <!-- Action Buttons Row 2: Verification & New Game -->
+      <div class="action-grid main-actions-grid">
+        <button id="btn-verify" class="action-btn primary" title="Verify entire board against rules">✓ Verify Solution</button>
+        <button id="btn-new-game" class="action-btn" title="Generate a fresh puzzle">🔄 New Puzzle</button>
+      </div>
+    </section>
 
-    <div class="action-row">
-      <button id="notes-btn" class="action-btn" aria-pressed="false">✏️ Notes: Off</button>
-      <button id="undo-btn" class="action-btn">↩ Undo</button>
-      <button id="check-btn" class="action-btn primary">Verify Solution</button>
-      <button id="new-game-btn" class="action-btn">🔄 New Puzzle</button>
-    </div>
-  </section>
+    <footer class="app-footer game-footer">
+      <p>Fill every row and column with 1–N without repeats. Shaded cage numbers must satisfy their target arithmetic.</p>
+    </footer>
 
-  <footer class="app-footer">
-    <p>Rule recap: every row, column, and 2×2 block holds 1–4 exactly once. Every shaded cage must also satisfy its printed target and operator.</p>
-  </footer>
+  </main>
 
 </div>
 
-<div id="modal-overlay" class="modal-overlay hidden">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div id="modal-icon" class="modal-icon">🎉</div>
-    <h2 id="modal-title">Solved!</h2>
-    <p id="modal-body"></p>
-    <div class="modal-stats" id="modal-stats"></div>
-    <button id="modal-close-btn" class="action-btn primary">Play Again</button>
+<!-- ==================== OVERLAYS & MODALS ==================== -->
+
+<!-- Victory / Game Over Modal -->
+<div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div id="modal-content" class="modal">
+    <!-- Rendered dynamically -->
+  </div>
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+</div>
+
+<!-- Pause Overlay -->
+<div id="pause-overlay" class="modal-overlay pause-overlay hidden">
+  <div class="pause-box">
+    <div class="pause-icon">⏸</div>
+    <h2>Puzzle Paused</h2>
+    <p>Take a breath. Timer is stopped.</p>
+    <button id="btn-resume-pause" class="action-btn primary large-btn">Resume Puzzle ▶</button>
   </div>
 </div>
 
-<script src="script.js"></script>
+<!-- Rules / How to Play Modal -->
+<div id="rules-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+  <div class="modal rules-box">
+    <h2 id="rules-title">How to Play Calcirix</h2>
+    <div class="rules-scrollable">
+      <div class="rule-card">
+        <h3>1. Grid Uniqueness (Sudoku Rules)</h3>
+        <p>In every puzzle, numbers <strong>1 through N</strong> must appear <strong>exactly once</strong> in each row and column.</p>
+        <p>In <strong>Level 1 (4×4)</strong>, every 2×2 block must also hold 1–4. In <strong>Level 4 (9×9)</strong>, every 3×3 box must hold 1–9 exactly once!</p>
+      </div>
+
+      <div class="rule-card">
+        <h3>2. Region Cages (KenKen Arithmetic)</h3>
+        <p>The grid is partitioned into outlined cages with arithmetic clues (e.g. <code>12+</code>, <code>6×</code>, <code>2÷</code>, <code>3-</code>, <code>5</code>):</p>
+        <ul>
+          <li><strong>+ (Addition):</strong> All cell values in the cage must sum to the target.</li>
+          <li><strong>× (Multiplication):</strong> All cell values multiplied together must equal the target.</li>
+          <li><strong>- (Subtraction):</strong> Difference between the two cell values equals the target.</li>
+          <li><strong>÷ (Division):</strong> Larger value divided by smaller value equals the target.</li>
+          <li><strong>Single numbers:</strong> Free clue! That cell must be that exact number.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card">
+        <h3>3. Progressive Level System</h3>
+        <ul>
+          <li><strong>Level 1 (4×4):</strong> 2×2 Sudoku blocks + KenKen arithmetic. Perfect warmup.</li>
+          <li><strong>Level 2 (5×5):</strong> Intermediate Latin square + hybrid arithmetic cages.</li>
+          <li><strong>Level 3 (7×7):</strong> Advanced multi-cell cages and deep logical deductions.</li>
+          <li><strong>Level 4 (9×9):</strong> Expert master matrix combining full 3×3 Sudoku boxes and KenKen region targets.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card">
+        <h3>4. Pro Controls & Shortcuts</h3>
+        <ul>
+          <li><strong>Keyboard:</strong> Keys <code>1–9</code> to place, <code>Backspace / 0</code> to clear, arrow keys to navigate.</li>
+          <li><strong>Notes:</strong> Toggle <code>N</code> to jot candidate numbers.</li>
+          <li><strong>Undo / Redo:</strong> <code>Ctrl+Z</code> to undo, <code>Ctrl+Y</code> to redo.</li>
+          <li><strong>Hint:</strong> Press <code>H</code> for a smart guided clue.</li>
+        </ul>
+      </div>
+    </div>
+    <button id="btn-rules-close" class="action-btn primary full-width">Got It, Let's Play</button>
+  </div>
+</div>
+
+<!-- Confirm Return to Menu Modal -->
+<div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-icon warn">⚠️</div>
+    <h2>Leave Current Puzzle?</h2>
+    <p>Your current progress on this grid will be abandoned.</p>
+    <div class="modal-actions">
+      <button id="btn-confirm-cancel" class="action-btn">Keep Playing</button>
+      <button id="btn-confirm-leave" class="action-btn danger">Return to Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts (Modular Architecture) -->
+<script src="js/constants.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+
 </body>
 </html>
